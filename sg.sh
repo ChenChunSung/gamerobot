@@ -6,7 +6,7 @@ log="terminal"
 #log="kernel"
 color=0
 count=0
-limit=300
+limit=900
 SECONDS=0
 
 show_color()
@@ -77,6 +77,13 @@ wait_then_click()
 check_and_click()
 {
 	get_color $1 $2
+	if [ "$color" = "$3" ]; then
+		log "$4 color match, click [$1,$2]"
+		$exce input touchscreen tap $1 $2
+		sleep 2
+		return
+	fi;
+	get_color $1 $2
 	if [ "$color" = "$3" ]; then 
 		log "$4 color match, click [$1,$2]"
 		$exce input touchscreen tap $1 $2
@@ -100,7 +107,7 @@ check_and_click_another()
 
 collect_all_items()
 {
-	wait_then_click 1361  1013   FF3B5069 "collect item @1"
+	wait_then_click 1361  1013   FF2F455F "collect item @1" #王侯甲
 	check_and_click  915   915   FF527B95 "outstand craft"
 	check_and_click  915   915   FF527B95 "outstand craft"
 	wait_then_click 1159  1013   FF374D65 "collect item @2"
@@ -272,17 +279,39 @@ explore_mission()
 	wait_then_click 2050 900 FF669074 "start mission" 3
 	wait_then_click 700 1010 FFCCD2D8 "select reward slot 1" 3
 	wait_then_click 1647 976 FF89A771 "get reward" 3
-	wait_then_click 1636 978 FF749758 "get reward continue a" 3
+
+
+	check_and_click 1636 978 FF749758 "get reward continue a"
+	check_and_click 1636 978 FF759858 "get reward continue b"
+	check_and_click 904  783 FFFFFFFF "drop equipment" 3
 	wait_then_click 900 1010 FFC4CAD2 "select reward slot 2" 3
 	wait_then_click 1647 976 FF89A771 "get reward" 3
-	wait_then_click 1636 978 FF759858 "get reward continue b" 3
-	wait_then_click 904  783 FFFFFFFF "drop equipment" 3
+	check_and_click 1636 978 FF749758 "get reward continue a"
+	check_and_click 1636 978 FF759858 "get reward continue b"
+	check_and_click 904  783 FFFFFFFF "drop equipment" 3
 	wait_then_click 1100 1010 FF465A70 "select reward slot 3" 3
 	wait_then_click 1647 976 FF89A771 "get reward" 3
-	wait_then_click 1636 978 FF759858 "get reward continue b" 3
-	wait_then_click 904  783 FFFFFFFF "drop equipment" 3
-	wait_then_click 2121    33   FFFFFFFF "exsit window"
+	check_and_click 1636 978 FF749758 "get reward continue a"
+	check_and_click 1636 978 FF759858 "get reward continue b"
+	check_and_click 904  783 FFFFFFFF "drop equipment" 3
+	wait_then_click 2121  33 FFFFFFFF "exsit window"
 	wait_then_click 1029 729 FF3E4236 "enter workshop"
+
+}
+
+create_some_starred_items()
+{
+	#wait_then_click  2129  375   FF735252 "collect material"
+	wait_then_click  2129  232   FF937272 "collect material"
+	wait_then_click  549  1008   FFFFFFFF "open forge window"
+	check_and_click  203  1022   FF2A4F69 "look starred item"
+
+	check_and_click 1463   718   FF92BFDF "forge the 4th item"
+	check_and_click 1463   718   FF92BFDF "forge the 4th item"
+	check_and_click_another 283 823   FF4A5263 "forge the 1st item" 283 700
+	check_and_click_another 283 823   FF2B4057 "forge the 1st item" 283 700
+	check_and_click  674   722   FF92BDDF "forge the 2ed item"
+	check_and_click 1117   718   FF92BFDF "forge the 3th item"
 }
 
 do_partial()
@@ -293,7 +322,7 @@ do_partial()
     for i in `seq 1 99999`;
     do
         duration=$SECONDS
-        if [[ "$duration" -gt "300" ]]; then
+        if [[ "$duration" -gt "600" ]]; then
        		log "\n------ run the $count time ------"
 			SECONDS=0
 			collect_all_items
@@ -313,4 +342,4 @@ do_partial()
     done
 }
 
-do_partial
+$1
